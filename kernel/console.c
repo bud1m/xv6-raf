@@ -150,14 +150,12 @@ cgaputc(int c)
 		{
 		case 'w':
 			pos -= 80;
-			crt[pos] = (c & 0xff) | 0x0700;
 			break;
 		case 'a':
 			/* code */
 			break;
 		case 's':
 			pos += 80;
-			crt[pos] = (c & 0xff) | 0x0700;
 			break;
 
 		case 'd':
@@ -176,7 +174,7 @@ cgaputc(int c)
 			break;
 		}
 	}
-	
+
 	if (c == '\n')
 		pos += 80 - pos % 80;
 	else if (c == BACKSPACE)
