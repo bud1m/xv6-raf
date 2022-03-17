@@ -142,27 +142,9 @@ cgaputc(int c)
 	outb(CRTPORT, 15);
 	pos |= inb(CRTPORT + 1);
 
-	if (c == '\n')
-		pos += 80 - pos % 80;
-	else if (c == BACKSPACE)
-	{
-		if (pos > 0)
-			--pos;
-	}
-	else
-		crt[pos++] = (c & 0xff) | 0x0700; // black on white
 
-	if (pos < 0 || pos > 25 * 80)
-		panic("pos under/overflow");
 
-	if ((pos / 80) >= 24)
-	{ // Scroll up.
-		memmove(crt, crt + 80, sizeof(crt[0]) * 23 * 80);
-		pos -= 80;
-		memset(crt + pos, 0, sizeof(crt[0]) * (24 * 80 - pos));
-	}
-
-	if (in_special_mode)
+		if (in_special_mode)
 	{
 		switch (c)
 		{
@@ -194,6 +176,27 @@ cgaputc(int c)
 			break;
 		}
 	}
+	
+	if (c == '\n')
+		pos += 80 - pos % 80;
+	else if (c == BACKSPACE)
+	{
+		if (pos > 0)
+			--pos;
+	}
+	else
+		crt[pos++] = (c & 0xff) | 0x0700; // black on white
+
+	if (pos < 0 || pos > 25 * 80)
+		panic("pos under/overflow");
+
+	if ((pos / 80) >= 24)
+	{ // Scroll up.
+		memmove(crt, crt + 80, sizeof(crt[0]) * 23 * 80);
+		pos -= 80;
+		memset(crt + pos, 0, sizeof(crt[0]) * (24 * 80 - pos));
+	}
+
 
 	outb(CRTPORT, 14);
 	outb(CRTPORT + 1, pos >> 8);
