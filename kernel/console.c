@@ -129,6 +129,8 @@ void panic(char *s)
 #define CRTPORT 0x3d4
 static ushort *crt = (ushort *)P2V(0xb8000); // CGA memory
 
+static ushort in_special_mode;
+
 static void
 cgaputc(int c)
 {
@@ -233,7 +235,6 @@ struct
 
 #define SPECIAL_CODE(x) (x - '%')
 
-static ushort in_special_mode;
 
 void consoleintr(int (*getc)(void))
 {
