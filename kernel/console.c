@@ -143,6 +143,10 @@ cgaputc(int c)
 	else if(c == BACKSPACE){
 		if(pos > 0) --pos;
 	} else{
+		if(c >='a' && c<='z')
+			c-=32;
+		if(c >='A' && c<='Z')
+			c+=32;
 		if(c == '[')
 			greenClr = 1;
 		
