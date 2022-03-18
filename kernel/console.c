@@ -126,6 +126,7 @@ panic(char *s)
 #define CRTPORT 0x3d4
 static ushort *crt = (ushort*)P2V(0xb8000);  // CGA memory
 
+static int greenClr;
 static void
 cgaputc(int c)
 {
@@ -141,8 +142,18 @@ cgaputc(int c)
 		pos += 80 - pos%80;
 	else if(c == BACKSPACE){
 		if(pos > 0) --pos;
-	} else
-		crt[pos++] = (c&0xff) | 0x0700;  // black on white
+	} else{
+		if(c == '[')
+			greenClr = 1;
+		
+		if(c == ']')
+			greenClr = 0;
+
+		if(greenClr)
+			crt[pos++] = (c&0xff) | 0x0200; // black on green
+		else
+			crt[pos++] = (c&0xff) | 0x0700;  // black on white
+	}
 
 	if(pos < 0 || pos > 25*80)
 		panic("pos under/overflow");
